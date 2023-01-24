@@ -12,9 +12,13 @@ mongoose.connect('',
 
 //Importation des routes
 const userRoutes = require('./routes/user');
+const sauceRoutes = require('./routes/sauces');
 
-//Appel aux routes des différentes fonctionnalités
+//Appel aux routes des différentes fonctionnalités pour l'utilisateur
 app.use('api/auth', userRoutes);
+
+//Appel aux routes des différentes fonctionnalités pour les sauces
+app.use('api/sauces', sauceRoutes);
 
 //Exportation
 module.exports = app;
