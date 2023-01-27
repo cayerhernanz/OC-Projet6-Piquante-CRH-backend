@@ -2,22 +2,20 @@
 const express = require('express');
 const app = express();
 
+//Implémentation Cors
+const cors = require('cors');
+
 //Accepter json
 app.use(express.json());
 
-//dotenv
+//Lancer Cors pour eviter erreurs de type CORS
+app.use(cors());
+
+//Implémenter dotenv
 require('dotenv').config();
 
 //Créer la variable des creds mongodb
 const mongoCred = process.env.MONGO_DB;
-
-//Authotiser différents ports (pour eviter erreur CORS)
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-  next();
-})
 
 //Implémentation mongoose
 const mongoose = require('mongoose');
