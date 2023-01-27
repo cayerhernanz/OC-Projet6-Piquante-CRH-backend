@@ -5,6 +5,12 @@ const bcrypt = require('bcrypt');
 //Importation de jsonwebtoken
 const jsonWT= require('jsonwebtoken');
 
+//Importation de dotenv
+require('dotenv').config();
+
+//Créer la variable de token secret
+const tokenKey = process.env.RANDOM_TOKEN_SECRET;
+
 //Importation du model utilisateur
 const User = require('../models/user')
 
@@ -51,7 +57,7 @@ exports.login = (req, res, next) => {
                         userId: user._id,
                         token: jsonWT.sign(
                             {userId: user._id},
-                            'RANDOM_TOKEN_SECRET', //changer en version finale
+                            tokenKey,
                             {expiresIn: '24h'}
                         )
                     });
