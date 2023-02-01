@@ -24,7 +24,7 @@ module.exports = (req, res, next) => {
         req.auth = {
             userId: userId
         };
-        //Vérifier méthode next
+        next();
     }
 
     //En cas d'erreur

@@ -7,7 +7,8 @@ const MIME_TYPES = {
     'image/jpg': 'jpg',
     'image/jpeg': 'jpg',
     'image/png': 'png'
-}
+};
+
 //Configuration de multer
 const storage = multer.diskStorage({
     //dossier où iront les images
@@ -18,12 +19,12 @@ const storage = multer.diskStorage({
     //nommage des images (eliminer les espaces blancs dans le nom) et extension de celle-ci (à partir de celle du fichier)
     filename: (req, file, callback) => {
         const name = file.originalname.split(' ').join('_');
-        const extension = MIME_TYPES(file.mimetype);
+        const extension = MIME_TYPES[file.mimetype];
 
         //Création du nom de l'image(avec une marque de temps)
         callback(null, name + Date.now() + '.' + extension);
     }
-})
+});
 
 //Exporter multer
 module.exports = multer({storage}).single('image');
