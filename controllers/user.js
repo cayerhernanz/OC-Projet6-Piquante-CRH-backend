@@ -58,7 +58,7 @@ exports.login = (req, res, next) => {
                         token: jsonWT.sign(
                             {userId: user._id},
                             tokenKey,
-                            {expiresIn: '24h'}
+                            {expiresIn: '1h'}
                         )
                     });
                 }

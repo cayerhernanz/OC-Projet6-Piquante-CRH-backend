@@ -2,11 +2,17 @@
 const express = require('express');
 const app = express();
 
-//Implémentation Cors
+//Implémentation de helmet pour la sécurité
+const helmet = require('helmet');
+
+//Implémentation Cors (à enlever lors de la mise en place du vrai serveur)
 const cors = require('cors');
 
 //Accepter json
 app.use(express.json());
+
+//Lancer helmet
+app.use(helmet());
 
 //Lancer Cors pour eviter erreurs de type CORS
 app.use(cors());
