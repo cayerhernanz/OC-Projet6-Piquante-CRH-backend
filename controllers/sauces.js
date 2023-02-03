@@ -18,13 +18,13 @@ exports.getAllSauces = (req, res, next) => {
 //Récupération d'une sauce
 exports.getOneSauce = (req, res, next) => {
     Sauce.findOne({
-        _id: req.parms.id
+        _id: req.params.id
     })
     .then((sauce) => {
-        res.status(200).json(thing);
+       return res.status(200).json(sauce);
     })
     .catch((error) => {
-        res.status(404).json({error});
+        return res.status(404).json({error});
     });
 };
 
@@ -32,10 +32,10 @@ exports.getOneSauce = (req, res, next) => {
 exports.createSauce = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauce);
     delete sauceObject._id;
-    // delete sauceObject._userId;
+    delete sauceObject._userId;
     const sauce = new Sauce({
         ...sauceObject,
-        userId: req.userId,
+        userId: res.locals.auth.userId,
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
 
         //Création des éléments like vides
@@ -46,27 +46,27 @@ exports.createSauce = (req, res, next) => {
     });
     sauce.save()
     .then(() => {
-        res.status(201).json({message: 'Sauce saved successfully.'});
+       return res.status(201).json({message: 'Sauce saved successfully.'});
     })
     .catch((error => {
-        res.status(400).json({error});
+        return res.status(400).json({error});
     }));
   };
 
 //MaJ d'une sauce
 exports.modifySauce = (req, res, next) => {
     const sauceObject = req.file ? {
-        ...JSON.parse(req.body.thing),
+        ...JSON.parse(req.body.sauce),
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : {...req.body};
     delete sauceObject._userId;
-    Sauce.findOne({_id: req.parms.id})
+    Sauce.findOne({_id: req.params.id})
     .then((sauce) => {
-        if (sauce.userId != req.auth.userId) {
-            res.status(401).json({message: 'Not authorized.'});
+        if (sauce.userId != res.locals.auth.userId) {
+            return res.status(401).json({message: 'Not authorized.'});
         }
         else{
-            Sauce.updateOne({_id: req.params.id}, {...sauceObject, _id: req.parms.id})
+            Sauce.updateOne({_id: req.params.id}, {...sauceObject, _id: req.params.id})
             .then(()=> res.status(200).json({message: 'Sauce modified.'}))
             .catch(error => res.status(401).json({error}));
         }
@@ -79,34 +79,34 @@ exports.modifySauce = (req, res, next) => {
 //Suppression d'une sauce
 exports.deleteSauce = (req, res, next) => {
     //Récuperer la sauce
-    Sauce.findOne({_id: req.parms.id})
+    Sauce.findOne({_id: req.params.id})
     .then(sauce => {
         //Vérifier que le propriétaire fait la requette
-        if (sauce.userId != req.auth.userId){
-            res.status(401).json({message: 'Not authorized.'});
+        if (sauce.userId != res.locals.auth.userId){
+            return res.status(401).json({message: 'Not authorized.'});
         }
         else{
             //Récuperation du nom du fichier (split dans le repertoire images)
-            const filename = thing.imageUrl.split('/images/')[1];
+            const filename = sauce.imageUrl.split('/images/')[1];
             //Suppression
             fs.unlink(`images/${filename}`, () => {
-                Sauce.deleteOne({_id: req.parms.id})
+                Sauce.deleteOne({_id: req.params.id})
                 .then(() => {
-                    res.status(200).json({message: 'Sauce deleted.'})
+                    return res.status(200).json({message: 'Sauce deleted.'})
                 })
                 .catch(error => res.status(401).json({error}));
             });
         }
     })
     .catch( error => {
-        res.status(500).json({error});
+        return res.status(500).json({error});
     });
 }
 
 //Liker, Disliker une sauce
 exports.likeSauce = (req, res, next) => {
     //Récupérer les éléments du corps de la rquette (utilisayeur, sauce, et interaction)
-    let targetSauce = req.parms.id;
+    let targetSauce = req.params.id;
     let user = req.body.userId;
     let like = req.body.like;
 

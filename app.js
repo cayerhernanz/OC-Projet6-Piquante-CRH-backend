@@ -1,6 +1,7 @@
 //Implémentation express
 const express = require('express');
 const app = express();
+const path = require('path');
 
 //Implémentation de helmet pour la sécurité
 const helmet = require('helmet');
@@ -12,10 +13,19 @@ const cors = require('cors');
 app.use(express.json());
 
 //Lancer helmet
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: false,
+})
+);
 
 //Lancer Cors pour eviter erreurs de type CORS
 app.use(cors());
+
+//Rendre accessible les images
+app.use('/images/', express.static(path.join(__dirname, 'images')));
+
 
 //Implémenter dotenv
 require('dotenv').config();
