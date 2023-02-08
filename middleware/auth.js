@@ -2,9 +2,6 @@
 //Importer jsonwebtoken
 const jsonWT = require('jsonwebtoken');
 
-//Importer dotenv
-require('dotenv').config();
-
 //Créer la variable de token secret
 const tokenKey = process.env.RANDOM_TOKEN_SECRET;
 

@@ -35,6 +35,7 @@ const mongoCred = process.env.MONGO_DB;
 
 //Implémentation mongoose
 const mongoose = require('mongoose');
+mongoose.set('strictQuery', true);
 mongoose.connect(mongoCred,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
